@@ -40,43 +40,6 @@ export default function ResultPage() {
     generateCareer();
   }, [stats]);
 
-  // Generate CV berdasarkan hasil karier
-  const generateCV = async () => {
-    try {
-      setLoadingCV(true);
-      setError(null);
-      const res = await fetch("/api/generate-cv", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ stats, career }),
-      });
-      if (!res.ok) throw new Error("Gagal membuat CV");
-
-      const data = await res.json();
-
-      // Format hasil JSON jadi teks yang enak dibaca
-      const formatted = `
-Ringkasan:
-${data.summary || "-"}
-
-Keahlian:
-${data.skills?.join(", ") || "-"}
-
-Kelebihan:
-${data.strengths?.join(", ") || "-"}
-
-Tujuan Karier:
-${data.career_goal || "-"}
-      `.trim();
-
-      setCvText(formatted);
-    } catch (err) {
-      console.error(err);
-      setError("Gagal membuat CV");
-    } finally {
-      setLoadingCV(false);
-    }
-  };
 
   return (
     <div className="max-w-2xl mx-auto text-center py-10">
@@ -103,17 +66,6 @@ ${data.career_goal || "-"}
             </div>
           ) : null}
 
-          <button
-            onClick={generateCV}
-            disabled={loadingCV}
-            className={`mt-6 px-4 py-2 rounded-lg text-white ${
-              loadingCV
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700"
-            }`}
-          >
-            {loadingCV ? "Membuat CV..." : "Buat CV-nya"}
-          </button>
         </div>
       )}
 
